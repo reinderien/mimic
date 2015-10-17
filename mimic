@@ -150,13 +150,20 @@ def pipe(hardness):
 
     out = getwriter(stdout.encoding or 'utf-8')(stdout)
 
-    for line in stdin:
+    # for line in stdin works for piped input but not keyboard input
+
+    while True:
+        try:
+            line = raw_input()
+        except EOFError:
+            return
         for c in line:
             if random() < hardness/100 and has_homographs(c):
                 hms = homographs_for_char(c)
                 index = randrange(len(hms))
                 c = hms[index]
             out.write(c)
+        print
 
 
 def parse():
