@@ -1,0 +1,191 @@
+#!/usr/bin/python
+# coding=utf-8
+
+
+def get_homographs():
+    """
+    Use http://dev.networkerror.org/utf8/?start=0&end=255&cols=10&show_uni_hex=on
+    with the stupid table width forced to auto.
+    This dataset is for ASCII characters mapped to UTF-8 homographs (some approximate).
+    """
+    return (
+        u'!\uFF01\u01C3\u119D\u2D51\uFE57',
+        u'"\uFF02\u030E',
+        u'#\uFF03\uFE5F',
+        u'$\uFF04\uFE69',
+        u'%\uFF05\u066A\u2052\uFE6A',
+        u'&\uFF06\uFE60',
+        u"'\uFF07\u02B9\u030D",
+        u'(\uFF08\u27EE\uFE59',
+        u')\uFF09\u27EF\uFE5A',
+        u'*\uFF0A\u22C6\uFE61',
+        u'+\uFF0B\u16ED\uFE62',
+        u',\uFF0C\u0317\u0326\u02CF\u16E7\u201A',
+        u'-\uFF0D\u0335\u02D7\u1680\u174D\u1806\u1C7C\u2212\u23AF\u23BC\u2574\u2CBB\u2CBB\u30FC\u3127\uFE63',
+        u'.\uFF0E\u0323\u2024',
+        u'/\uFF0F\u0338\u1735\u2044\u2215\u29F8\u2CC6\u3033',
+        u'0\uFF10\u1C50',
+        u'1\uFF11',
+        u'2\uFF12\u14BF',
+        u'3\uFF13\u01B7\u1883\u2CC4\u2CCC\u2CCD',
+        u'4\uFF14\u13CE',
+        u'5\uFF15',
+        u'6\uFF16\u13EE',
+        u'7\uFF17',
+        u'8\uFF18',
+        u'9\uFF19\u13ED',
+        u':\uFF1A\u02D0\u02F8\u0589\u05C3\u1361\u16EC\u17C8\u1804\u1C7A\u205A\u2236\u2806\uFE30\uFE55',
+        u';\uFF1B\u037E\uFE54',
+        u'<\uFF1C\u02C2\u2039\u227A\u276E\u2D66\u3031\u3111\uFE64',
+        u'=\uFF1D\u2550\u268C\u30A0\uFE66',
+        u'>\uFF1E\u02C3\u203A\u227B\u276F\uFE65',
+        u'?\uFF1F\uFE56',
+        u'@\uFF20\uFE6B',
+        u'A\uFF21\u0391\u0410\u13AA',
+        u'B\uFF22\u0392\u0412\u13F4\u15F7\u2C82',
+        u'C\uFF23\u03F9\u0421\u13DF\u216D\u2CA4',
+        u'D\uFF24\u13A0\u15EA\u216E',
+        u'E\uFF25\u0395\u0415\u13AC',
+        u'F\uFF26\u15B4',
+        u'G\uFF27\u050C\u13C0',
+        u'H\uFF28\u0397\u041D\u12D8\u13BB\u157C\u2C8E',
+        u'I\uFF29\u0399\u0406',
+        u'J\uFF2A\u0408\u13AB\u148D',
+        u'K\uFF2B\u039A\u039A\u13E6\u16D5\u212A\u2C94',
+        u'L\uFF2C\u13DE\u14AA\u216C\u2CD0\u31C4',
+        u'M\uFF2D\u039C\u03FA\u041C\u13B7\u216F',
+        u'N\uFF2E\u039D\u2C9A',
+        u'O\uFF2F\u039F\u041E\u1C5B\u2C9E',
+        u'P\uFF30\u03A1\u0420\u13E2\u2CA2',
+        u'Q\uFF31\u051A\u10B3\u2D55',
+        u'R\uFF32\u13A1\u13D2\u1587',
+        u'S\uFF33\u0405\u10BD\u13DA',
+        u'T\uFF34\u03A4\u0422\u13A2',
+        u'U\uFF35',
+        u'V\uFF36\u13D9',
+        u'W\uFF37\u13B3\u13D4',
+        u'X\uFF38\u03A7\u0425\u2CAC',
+        u'Y\uFF39\u03A5\u2CA8',
+        u'Z\uFF3A\u0396\u13C3',
+        u'[\uFF3B',
+        u'\\\uFF3C\u2216\u29F5\u29F9\u3035\uFE68',
+        u']\uFF3D',
+        u'^\uFF3E\u0302\u02C4\u02C6\u1DBA\u2303',
+        u'_\uFF3F\u02CD\u0331\u0320\u268A\uFE58',
+        u'`\uFF40\u0300\u02CB\u2035',
+        u'a\uFF41\u0251\u0430',
+        u'b\uFF42',
+        u'c\uFF43\u03F2\u0441\u217D',
+        u'd\uFF44\u0501\u217E',
+        u'e\uFF45\u0435\u1971\u19C9',
+        u'f\uFF46',
+        u'g\uFF47\u0261',
+        u'h\uFF48\u04BB',
+        u'i\uFF49\u0456\u2170',
+        u'j\uFF4A\u03F3\u0458',
+        u'k\uFF4B',
+        u'l\uFF4C',
+        u'm\uFF4D\u217F',
+        u'n\uFF4E\u1952',
+        u'o\uFF4F\u03BF\u043E\u0CE6\u0D20\u0D66\u199E\u19D0\u2C9F',
+        u'p\uFF50\u0440\u2CA3',
+        u'q\uFF51',
+        u'r\uFF52',
+        u's\uFF53\u0455',
+        u't\uFF54',
+        u'u\uFF55\u1959\u222A',
+        u'v\uFF56\u1D20\u2174\u2228\u22C1',
+        u'w\uFF57\u1D21',
+        u'x\uFF58\u0445\u2179\u2CAD',
+        u'y\uFF59\u0443\u1EFF',
+        u'z\uFF5A\u1901\u1D22',
+        u'{\uFF5B\uFE5B',
+        u'|\uFF5C\u01C0\u0846\u1175\u16C1\u20D2\u239C\u239F\u23A2'
+        + u'\u23A5\u23AA\u23AE\u2F01\u3021\u4E28\uFE31\uFE33\uFFE8',
+        u'}\uFF5D\uFE5C',
+        u'~\uFF5E\u02DC\u2053\u223C\u301C'
+    )
+
+
+def homographs_for_char(char):
+    index = ord(char) - ord('!')
+    return get_homographs()[index]
+
+
+def has_homographs(char):
+    return ord('!') <= ord(char) <= ord('~')
+
+
+def listing():
+    for homs in get_homographs():
+        for c in homs:
+            print c,
+        print
+
+
+def explain(char):
+    if not has_homographs(char):
+        print 'Must be ASCII'
+        return
+
+    try:
+        import unicodedata
+    except ImportError:
+        print 'Install docutils.'
+        return
+
+    for hg in homographs_for_char(char):
+        print ' %(hg)c\tu%(point)04X %(cat)s/%(name)s' % {
+            'hg': hg,
+            'point': ord(hg),
+            'name': unicodedata.name(hg, '<unnamed>'),
+            'cat': unicodedata.category(hg)
+        }
+
+
+def pipe(hardness):
+    from codecs import getwriter
+    from random import random, randrange
+    from sys import stdin, stdout
+
+    out = getwriter(stdout.encoding or 'utf-8')(stdout)
+
+    for line in stdin:
+        for c in line:
+            if random() > hardness/100 or not has_homographs(c):
+                out.write(c)
+            else:
+                hms = homographs_for_char(c)
+                index = randrange(len(hms))
+                c = hms[index]
+                out.write(c)
+
+
+def parse():
+    from optparse import OptionParser
+
+    parser = OptionParser()
+    parser.add_option('-m', '--me-harder', dest='chance', type='float', default=1,
+                      help='replacement percent')
+    parser.add_option('-e', '--explain', dest='char',
+                      help="show a char's homographs")
+    parser.add_option('-l', '--list', action='store_true',
+                      help='show all homographs')
+    return parser.parse_args()
+
+
+def main():
+    try:
+        (options, args) = parse()
+        if options.list:
+            listing()
+        elif options.char:
+            explain(unicode(options.char[0], 'utf-8'))
+        else:
+            pipe(options.chance)
+    except KeyboardInterrupt:
+        pass
+
+
+if __name__ == '__main__':
+    main()
