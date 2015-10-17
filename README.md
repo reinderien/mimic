@@ -20,3 +20,14 @@ Fun games to play with mimic:
 - Pipe some source code through and see if you can find all of the problems
 - Pipe someone else's source code through without telling them
 - Be fired, and then killed
+
+Example usage:
+
+```
+./mimic --list       # Show all of the homographs
+./mimic --explain=o  # What crazy things can we do with this letter
+cat mimic | ./mimic  # Pipe the source through itself at 1%
+
+# Turn up the knob and save the results
+cat mimic | ./mimic --me-harder 25 | mimicked
+```
