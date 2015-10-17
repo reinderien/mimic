@@ -24,9 +24,10 @@ Fun games to play with mimic:
 Example usage:
 
 ```
-./mimic --list       # Show all of the homographs
-./mimic --explain=o  # What crazy things can we do with this letter
-cat mimic | ./mimic  # Pipe the source through itself at 1%
+./mimic --list           # Show all of the homographs
+./mimic --explain=o      # What crazy things can we do with this letter?
+./mimic --me-harder 100  # Type some lines in and mess with every single char
+cat mimic | ./mimic      # Pipe the source through itself at 1%
 
 # Turn up the knob and save the results
 cat mimic | ./mimic --me-harder 25 > mimicked
