@@ -29,5 +29,5 @@ Example usage:
 cat mimic | ./mimic  # Pipe the source through itself at 1%
 
 # Turn up the knob and save the results
-cat mimic | ./mimic --me-harder 25 | mimicked
+cat mimic | ./mimic --me-harder 25 > mimicked
 ```
