@@ -152,13 +152,11 @@ def pipe(hardness):
 
     for line in stdin:
         for c in line:
-            if random() > hardness/100 or not has_homographs(c):
-                out.write(c)
-            else:
+            if random() < hardness/100 and has_homographs(c):
                 hms = homographs_for_char(c)
                 index = randrange(len(hms))
                 c = hms[index]
-                out.write(c)
+            out.write(c)
 
 
 def parse():
