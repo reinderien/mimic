@@ -32,3 +32,9 @@ cat mimic | ./mimic      # Pipe the source through itself at 1%
 # Turn up the knob and save the results
 cat mimic | ./mimic --me-harder 25 > mimicked
 ```
+
+Observe the mayhem:
+
+<img alt="some bad code"
+     src="https://cloud.githubusercontent.com/assets/1236420/10557275/fe460966-7472-11e5-9929-7d5e54c8f26a.png" />
+*"BUT WHY?"*
