@@ -1,6 +1,8 @@
 # mimic
 *[ab]using UTF to create tragedy*
 
+## Introduction
+
 <img alt="monster" align="right"
      src="https://cloud.githubusercontent.com/assets/1236420/10557120/f1faedfe-746b-11e5-8a7b-671bd3e30691.jpg" />
 
@@ -21,7 +23,7 @@ Fun games to play with mimic:
 - Pipe someone else's source code through without telling them
 - Be fired, and then killed
 
-Example usage:
+## Example usage
 
 ```
 ./mimic --list           # Show all of the homographs
@@ -38,3 +40,9 @@ Observe the mayhem:
 <img alt="some bad code"
      src="https://cloud.githubusercontent.com/assets/1236420/10557275/fe460966-7472-11e5-9929-7d5e54c8f26a.png" />
 *"BUT WHY?"*
+
+## See also
+
+[Wikipedia: Unicode Equivalence] (https://en.wikipedia.org/wiki/Unicode_equivalence)
+[Wikipedia: IDN homograph attack](https://en.wikipedia.org/wiki/IDN_homograph_attack)
+[Online homograph generator](http://www.irongeek.com/homoglyph-attack-generator.php)
