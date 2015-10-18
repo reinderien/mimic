@@ -40,7 +40,7 @@ cat mimic | ./mimic --me-harder 25 > mimicked
 Observe the mayhem:
 
 <img alt="some bad code"
-     src="https://cloud.githubusercontent.com/assets/1236420/10557275/fe460966-7472-11e5-9929-7d5e54c8f26a.png" />
+     src="https://cloud.githubusercontent.com/assets/1236420/10564931/76507da4-7592-11e5-9971-f6a04ad06298.png" />
 *"BUT WHY?"*
 
 Or, if you've been mimicked a little harder,
