@@ -40,7 +40,7 @@ def get_homographs():
         u'7\uFF17',
         u'8\uFF18',
         u'9\uFF19\u13ED',
-        u':\uFF1A\u02D0\u02F8\u0589\u05C3\u1361\u16EC\u1804\u1C7A\u205A\u2236\u2806\uFE13\uFE30\uFE55',
+        u':\uFF1A\u02D0\u02F8\u0589\u1361\u16EC\u1804\u1C7A\u205A\u2236\u2806\uFE13\uFE30\uFE55',
         u';\uFF1B\u037E\uFE14\uFE54',
         u'<\uFF1C\u02C2\u2039\u227A\u276E\u2D66\u3031\u3111\uFE64',
         u'=\uFF1D\u2550\u268C\u30A0\uFE66',
@@ -106,7 +106,7 @@ def get_homographs():
         u'y\uFF59\u0443\u1EFF',
         u'z\uFF5A\u1901\u1D22',
         u'{\uFF5B\uFE5B',
-        u'|\uFF5C\u01C0\u0846\u16C1\u239C\u239F\u23A2'
+        u'|\uFF5C\u01C0\u16C1\u239C\u239F\u23A2'
         + u'\u23A5\u23AA\u23AE\u2F01\u3021\u4E28\uFE31\uFE33\uFFE8',
         u'}\uFF5D\uFE5C',
         u'~\uFF5E\u02DC\u2053\u223C\u301C'
@@ -168,12 +168,22 @@ def explain(char):
 
     out = get_writer()
 
+    out.write('Char\tPoint %20s Cat Name\n' % ('Normal'))
+
     for hg in homographs_for_char(char):
+        norms = ''
+        for form in ('NFC', 'NFKC', 'NFD', 'NFKD'):
+            h = unicodedata.normalize(form, hg)
+            if len(h) == 1 and has_homographs(h):
+                if norms:
+                    norms += ' '
+                norms += form
         out.write(' %(field)c%(hg)c%(field)c\t'
-                  'u%(point)04X %(cat)s/%(name)s\n' % {
+                  'u%(point)04X %(norms)20s %(cat)3s %(name)s\n' % {
                       'field': field,
                       'hg': hg,
                       'point': ord(hg),
+                      'norms': norms,
                       'cat': unicodedata.category(hg),
                       'name': unicodedata.name(hg, '<unnamed>')
                   })
@@ -195,7 +205,7 @@ def search():
         u = unichr(point)
         for form in ('NFC', 'NFKC', 'NFD', 'NFKD'):
             h = unicodedata.normalize(form, u)
-            if len(h) == 1 and ord(h) != ord(u) and ord(' ') <= ord(h) <= ord('~'):
+            if len(h) == 1 and ord(h) != ord(u) and has_homographs(h):
                 out.write('%(ascii)c %(form)s->  %(hg)c\tu%(point)04X %(cat)s/%(name)s' % {
                     'ascii': h,
                     'form': form,
