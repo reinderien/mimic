@@ -58,7 +58,7 @@ def get_homographs():
         u'I\u0399\u0406\u2160',
         u'J\u0408\u13AB\u148D',
         u'K\u039A\u039A\u13E6\u16D5\u212A\u2C94',
-        u'L\u13DE\u14AA\u216C\u2CD0\u31C4',
+        u'L\u13DE\u14AA\u216C\u2CD0',
         u'M\u039C\u03FA\u041C\u13B7\u216F',
         u'N\u039D\u2C9A',
         u'O\u039F\u041E\u1C5B\u2C9E',
