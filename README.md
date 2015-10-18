@@ -35,11 +35,18 @@ cat mimic | ./mimic      # Pipe the source through itself at 1%
 cat mimic | ./mimic --me-harder 25 > mimicked
 ```
 
+### Results
+
 Observe the mayhem:
 
 <img alt="some bad code"
      src="https://cloud.githubusercontent.com/assets/1236420/10557275/fe460966-7472-11e5-9929-7d5e54c8f26a.png" />
 *"BUT WHY?"*
+
+Or, if you've been mimicked a little harder,
+
+<img alt="some worse code"
+     src="https://cloud.githubusercontent.com/assets/1236420/10564914/f7963ae4-7591-11e5-9b45-f123e42b22f4.png" />
 
 ### See also
 
