@@ -2,6 +2,14 @@
 # coding=utf-8
 
 
+import sys
+
+
+if not ((2, 7, 0) <= sys.version_info < (3,)):
+    print 'Python 2.x required.'
+    exit(1)
+
+
 # Surrounding field for printing clarity
 field = u'\u2591'
 
