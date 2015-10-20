@@ -4,7 +4,6 @@
 
 from sys import version_info
 
-
 if version_info >= (3,):
     unichr = chr
     unicode = lambda s, e: s
@@ -152,6 +151,7 @@ def get_writer():
     """
     from codecs import getwriter
     from sys import stdout
+
     if version_info >= (3,):
         return stdout
     return getwriter(stdout.encoding or 'utf-8')(stdout)
@@ -159,6 +159,7 @@ def get_writer():
 
 def read_line():
     from sys import stdin
+
     if version_info >= (3,):
         return input()
     return raw_input().decode(stdin.encoding or 'utf-8')
@@ -225,14 +226,14 @@ def search():
 
     out = get_writer()
 
-    for point in xrange(ord('~')+1, 0x10000):
+    for point in xrange(ord('~') + 1, 0x10000):
         u = unichr(point)
         for form in ('NFC', 'NFKC', 'NFD', 'NFKD'):
             if u in hg_index:
                 continue
             h = unicodedata.normalize(form, u)
             if len(h) == 1 and ord(h) != ord(u) and (
-                    has_homographs(h) or is_ascii(h)):
+                        has_homographs(h) or is_ascii(h)):
                 out.write('%(ascii)c %(form)s->  %(hg)c\tu%(point)04X %(cat)s/%(name)s\n' % {
                     'ascii': h,
                     'form': form,
@@ -263,8 +264,8 @@ def pipe(hardness, reverse=False):
             return
         for c in line:
             if reverse:
-              c = hg_index.get(c, c)[0]
-            elif random() < hardness/100 and has_homographs(c):
+                c = hg_index.get(c, c)[0]
+            elif random() < hardness / 100 and has_homographs(c):
                 hms = homographs_for_char(c)
                 index = randrange(len(hms))
                 c = hms[index]
