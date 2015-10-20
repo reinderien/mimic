@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # coding=utf-8
 
 
@@ -6,7 +6,7 @@ import sys
 
 
 if not ((2, 7) <= sys.version_info < (3,)):
-    print 'Python 2.x required.'
+    print('Python 2.x required.')
     exit(1)
 
 
