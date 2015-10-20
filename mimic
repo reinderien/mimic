@@ -2,12 +2,14 @@
 # coding=utf-8
 
 
-import sys
+from sys import version_info
 
 
-if not ((2, 7) <= sys.version_info < (3,)):
-    print('Python 2.x required.')
-    exit(1)
+if version_info >= (3,):
+    raw_input = input
+    unichr = chr
+    unicode = lambda s, e: s
+    xrange = range
 
 
 # Surrounding field for printing clarity
@@ -147,6 +149,8 @@ def get_writer():
     """
     from codecs import getwriter
     from sys import stdout
+    if version_info >= (3,):
+        return stdout
     return getwriter(stdout.encoding or 'utf-8')(stdout)
 
 
@@ -167,13 +171,13 @@ def explain(char):
     :param char: An ASCII char to explain
     """
     if not has_homographs(char):
-        print 'No homographs.'
+        print('No homographs.')
         return
 
     try:
         import unicodedata
     except ImportError:
-        print 'Install docutils.'
+        print('Install docutils.')
         return
 
     out = get_writer()
@@ -206,7 +210,7 @@ def search():
     try:
         import unicodedata
     except ImportError:
-        print 'Install docutils.'
+        print('Install docutils.')
         return
 
     out = get_writer()
