@@ -274,7 +274,7 @@ def main():
         if options.list:
             listing()
         elif options.char:
-            explain(unicode(options.char[0], 'utf-8'))
+            explain(unicode(options.char, 'utf-8'))
         else:
             pipe(options.chance)
     except KeyboardInterrupt:
