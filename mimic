@@ -34,7 +34,7 @@ def fill_homographs():
         u'$\uFF04\uFE69',
         u'%\uFF05\u066A\u2052\uFE6A',
         u'&\uFF06\uFE60',
-        u"'\uFF07\u02B9",
+        u"'\uFF07\u02B9\u0374",
         u'(\uFF08\uFE59',
         u')\uFF09\uFE5A',
         u'*\uFF0A\u22C6\uFE61',
@@ -142,6 +142,10 @@ def has_homographs(char):
     return char in hg_index
 
 
+def is_ascii(char):
+    return ord(' ') <= ord(char) <= ord('~')
+
+
 def get_writer():
     """
     :return: A codec writer for stdout. Necessary for output piping to work.
@@ -224,9 +228,12 @@ def search():
     for point in xrange(ord('~')+1, 0x10000):
         u = unichr(point)
         for form in ('NFC', 'NFKC', 'NFD', 'NFKD'):
+            if u in hg_index:
+                continue
             h = unicodedata.normalize(form, u)
-            if len(h) == 1 and ord(h) != ord(u) and has_homographs(h):
-                out.write('%(ascii)c %(form)s->  %(hg)c\tu%(point)04X %(cat)s/%(name)s' % {
+            if len(h) == 1 and ord(h) != ord(u) and (
+                    has_homographs(h) or is_ascii(h)):
+                out.write('%(ascii)c %(form)s->  %(hg)c\tu%(point)04X %(cat)s/%(name)s\n' % {
                     'ascii': h,
                     'form': form,
                     'hg': u,
