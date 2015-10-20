@@ -5,23 +5,27 @@
 import sys
 
 
-if not ((2, 7, 0) <= sys.version_info < (3,)):
+if not ((2, 7) <= sys.version_info < (3,)):
     print 'Python 2.x required.'
     exit(1)
 
 
 # Surrounding field for printing clarity
 field = u'\u2591'
+# List of all homograph strings
+all_hgs = []
+# Index dict of all homographs
+hg_index = {}
 
 
-def get_homographs():
+def fill_homographs():
     """
     Use http://dev.networkerror.org/utf8/?start=0&end=255&cols=10&show_uni_hex=on
     with the stupid table width forced to auto.
     This dataset is for ASCII characters mapped to UTF-8 homographs (some approximate).
     Some of the entries are also selected from the results of search(), below.
     """
-    return (
+    all_hgs.extend((
         u' \u00A0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F',
         u'!\uFF01\u01C3\u2D51\uFE15\uFE57',
         u'"\uFF02',
@@ -38,15 +42,15 @@ def get_homographs():
         u'-\uFF0D\u02D7\u2212\u23BC\u2574\uFE63',
         u'.\uFF0E\u2024',
         u'/\uFF0F\u1735\u2044\u2215\u29F8',
-        u'0',
-        u'1',
+        # u'0',
+        # u'1',
         u'2\u14BF',
         u'3\u01B7\u2128',
         u'4\u13CE',
-        u'5',
+        # u'5',
         u'6\u13EE',
-        u'7',
-        u'8',
+        # u'7',
+        # u'8',
         u'9\u13ED',
         u':\uFF1A\u02D0\u02F8\u0589\u1361\u16EC\u205A\u2236\u2806\uFE13\uFE55',
         u';\uFF1B\u037E\uFE14\uFE54',
@@ -75,7 +79,7 @@ def get_homographs():
         u'R\u13A1\u13D2\u1587',
         u'S\u0405\u13DA',
         u'T\u03A4\u0422\u13A2',
-        u'U',
+        # u'U',
         u'V\u13D9\u2164',
         u'W\u13B3\u13D4',
         u'X\u03A7\u0425\u2169\u2CAC',
@@ -88,25 +92,25 @@ def get_homographs():
         u'_\uFF3F\u02CD\u268A',
         u'`\uFF40\u02CB\u1FEF\u2035',
         u'a\u0251\u0430',
-        u'b',
+        # u'b',
         u'c\u03F2\u0441\u217D',
         u'd\u0501\u217E',
         u'e\u0435\u1971',
-        u'f',
+        # u'f',
         u'g\u0261',
         u'h\u04BB',
         u'i\u0456\u2170',
         u'j\u03F3\u0458',
-        u'k',
+        # u'k',
         u'l\u217C',
         u'm\u217F',
         u'n\u1952',
         u'o\u03BF\u043E\u0D20\u2C9F',
         u'p\u0440\u2CA3',
-        u'q',
-        u'r',
+        # u'q',
+        # u'r',
         u's\u0455',
-        u't',
+        # u't',
         u'u\u1959\u222A',
         u'v\u1D20\u2174\u2228\u22C1',
         u'w\u1D21',
@@ -117,25 +121,26 @@ def get_homographs():
         u'|\uFF5C\u01C0\u16C1\u239C\u239F\u23A2\u23A5\u23AA\u23AE\uFFE8',
         u'}\uFF5D\uFE5C',
         u'~\uFF5E\u02DC\u2053\u223C'
-    )
+    ))
+    for hgs in all_hgs:
+        for c in hgs:
+            hg_index[c] = hgs
 
 
 def homographs_for_char(char):
     """
-    :param char: The ASCII char to look up
+    :param char: The char to look up
     :return: A string of homographs for that char
     """
-    index = ord(char) - ord(' ')
-    return get_homographs()[index]
+    return hg_index[char]
 
 
 def has_homographs(char):
     """
     :param char: A character to check
-    :return: Whether that character is printable ASCII (i.e. we have
-    homographs for it)
+    :return: Whether we have homographs for it
     """
-    return ord(' ') <= ord(char) <= ord('~')
+    return char in hg_index
 
 
 def get_writer():
@@ -152,8 +157,8 @@ def listing():
     Show a list of all known homographs
     """
     out = get_writer()
-    for homs in get_homographs():
-        for c in homs:
+    for hgs in all_hgs:
+        for c in hgs:
             out.write(field + c)
         out.write(field + '\n')
 
@@ -164,7 +169,7 @@ def explain(char):
     :param char: An ASCII char to explain
     """
     if not has_homographs(char):
-        print 'Must be ASCII'
+        print 'No homographs.'
         return
 
     try:
@@ -175,13 +180,13 @@ def explain(char):
 
     out = get_writer()
 
-    out.write('Char\tPoint %20s Cat Name\n' % ('Normal'))
+    out.write('Char\tPoint %20s Cat Name\n' % 'Normal')
 
     for hg in homographs_for_char(char):
         norms = ''
         for form in ('NFC', 'NFKC', 'NFD', 'NFKD'):
             h = unicodedata.normalize(form, hg)
-            if len(h) == 1 and has_homographs(h):
+            if h == hg[0]:
                 if norms:
                     norms += ' '
                 norms += form
@@ -275,6 +280,8 @@ def main():
     except KeyboardInterrupt:
         pass
 
+
+fill_homographs()
 
 if __name__ == '__main__':
     main()
