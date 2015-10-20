@@ -122,7 +122,7 @@ def fill_homographs():
         u'}\uFF5D\uFE5C',
         u'~\uFF5E\u02DC\u2053\u223C'
     ))
-    hg_index = {c: hgs for hgs in all_hgs for c in hgs}
+    hg_index.update({c: hgs for hgs in all_hgs for c in hgs})
 
 
 def homographs_for_char(char):
