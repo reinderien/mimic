@@ -244,7 +244,7 @@ def search():
                 break
 
 
-def pipe(hardness):
+def pipe(hardness, reverse=False):
     """
     Pipe from input to output, replacing chars with homographs
     End with ctrl+C or EOF
@@ -262,7 +262,9 @@ def pipe(hardness):
         except EOFError:
             return
         for c in line:
-            if random() < hardness/100 and has_homographs(c):
+            if reverse:
+              c = hg_index.get(c, c)[0]
+            elif random() < hardness/100 and has_homographs(c):
                 hms = homographs_for_char(c)
                 index = randrange(len(hms))
                 c = hms[index]
@@ -280,6 +282,8 @@ def parse():
                       help="show a char's homographs")
     parser.add_option('-l', '--list', action='store_true',
                       help='show all homographs')
+    parser.add_option('-r', '--reverse', action='store_true',
+                      help='reverse operation, clean a mimicked file')
     return parser.parse_args()
 
 
@@ -291,7 +295,7 @@ def main():
         elif options.char:
             explain(unicode(options.char, 'utf-8'))
         else:
-            pipe(options.chance)
+            pipe(options.chance, options.reverse)
     except KeyboardInterrupt:
         pass
 
