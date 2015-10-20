@@ -17,8 +17,6 @@ field = u'\u2591'
 all_hgs = []
 # Index dict of all homographs
 hg_index = {}
-# Reverse index
-hgr_index = {}
 
 
 def fill_homographs():
@@ -126,7 +124,7 @@ def fill_homographs():
         u'~\uFF5E\u02DC\u2053\u223C'
     ))
     hg_index.update({c: hgs for hgs in all_hgs for c in hgs})
-    hgr_index.update({hg:c[0] for c in all_hgs for hg in c[1:]})
+
 
 def homographs_for_char(char):
     """
@@ -265,7 +263,7 @@ def pipe(hardness, reverse=False):
             return
         for c in line:
             if reverse:
-              c = hgr_index.get(c, c)
+              c = hg_index.get(c, c)[0]
             elif random() < hardness/100 and has_homographs(c):
                 hms = homographs_for_char(c)
                 index = randrange(len(hms))
