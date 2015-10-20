@@ -6,7 +6,6 @@ from sys import version_info
 
 
 if version_info >= (3,):
-    raw_input = input
     unichr = chr
     unicode = lambda s, e: s
     xrange = range
@@ -154,6 +153,13 @@ def get_writer():
     return getwriter(stdout.encoding or 'utf-8')(stdout)
 
 
+def read_line():
+    from sys import stdin
+    if version_info >= (3,):
+        return input()
+    return raw_input().decode(stdin.encoding or 'utf-8')
+
+
 def listing():
     """
     Show a list of all known homographs
@@ -245,7 +251,7 @@ def pipe(hardness):
 
     while True:
         try:
-            line = raw_input()
+            line = read_line()
         except EOFError:
             return
         for c in line:
