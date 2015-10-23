@@ -38,7 +38,7 @@ cat mimic | ./mimic --me-harder 25 > mimicked
 
 # Or, if your code acts strange, but you have seen this prank before:
 cat mimicked | ./mimic --reverse > unmimicked
-diff unmimicked mimic
+diff unmimicked mimicked
 ```
 
 ### Results
