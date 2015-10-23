@@ -26,18 +26,21 @@ Fun games to play with mimic:
 
 ### Example usage
 
+These examples assume that mimic has been installed as per the instructions
+below.
+
 ```
-./mimic --list           # Show all of the homoglyphs
-./mimic --explain=o      # What crazy things can we do with this letter?
-./mimic --me-harder 100  # Type some lines in and mess with every single char
-./mimic --reverse        # Undo the mayhem. Boooring.
-cat mimic | ./mimic      # Pipe the source through itself at 1%
+mimic --list           # Show all of the homoglyphs
+mimic --explain=o      # What crazy things can we do with this letter?
+mimic --me-harder 100  # Type some lines in and mess with every single char
+mimic --reverse        # Undo the mayhem. Boooring.
+cat mimic | mimic      # Pipe the source through itself at 1%
 
 # Turn up the knob and save the results
-cat mimic | ./mimic --me-harder 25 > mimicked
+cat mimic | mimic --me-harder 25 > mimicked
 
 # Or, if your code acts strange, but you have seen this prank before:
-cat mimicked | ./mimic --reverse > unmimicked
+cat mimicked | mimic --reverse > unmimicked
 diff unmimicked mimic
 ```
 
