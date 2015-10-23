@@ -23,22 +23,39 @@ Fun games to play with mimic:
 - Pipe some source code through and see if you can find all of the problems
 - Pipe someone else's source code through without telling them
 - Be fired, and then killed
+ 
+### Installation
+
+Install from a local directory if you've cloned:
+
+```
+pip install -e .
+```
+
+Install straight from the repo:
+
+```
+pip install git+git://github.com/reinderien/mimic.git
+```
+
 
 ### Example usage
 
+Before installation, invoke via `python -m mimic`. After, simply use `mimic`.
+
 ```
-./mimic --list           # Show all of the homoglyphs
-./mimic --explain=o      # What crazy things can we do with this letter?
-./mimic --me-harder 100  # Type some lines in and mess with every single char
-./mimic --reverse        # Undo the mayhem. Boooring.
-cat mimic | ./mimic      # Pipe the source through itself at 1%
+mimic --list           # Show all of the homoglyphs
+mimic --explain=o      # What crazy things can we do with this letter?
+mimic --me-harder 100  # Type some lines in and mess with every single char
+mimic --reverse        # Undo the mayhem. Boooring.
+cat somefile | mimic   # Pipe some source through at 1%
 
 # Turn up the knob and save the results
-cat mimic | ./mimic --me-harder 25 > mimicked
+cat somefile | mimic --me-harder 25 > mimicked
 
 # Or, if your code acts strange, but you have seen this prank before:
-cat mimicked | ./mimic --reverse > unmimicked
-diff unmimicked mimic
+cat mimicked | mimic --reverse > fixedfile
+diff fixedfile somefile
 ```
 
 ### Results
@@ -53,14 +70,6 @@ Or, if you've been mimicked a little harder,
 
 <img alt="some worse code"
      src="https://cloud.githubusercontent.com/assets/1236420/10564914/f7963ae4-7591-11e5-9b45-f123e42b22f4.png" />
-
-### Installation
-
-Install mimic directly via pip:
-
-```
-pip install git+git://github.com/reinderien/mimic.git
-```
 
 ### Solutions
 
