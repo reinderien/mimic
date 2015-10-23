@@ -81,4 +81,4 @@ People have noticed how terrible this is.
 
 [Wikipedia: IDN homograph attack](https://en.wikipedia.org/wiki/IDN_homograph_attack)
 
-[Online homograph generator](http://www.irongeek.com/homoglyph-attack-generator.php)
+[Online homoglyph generator](http://www.irongeek.com/homoglyph-attack-generator.php)
