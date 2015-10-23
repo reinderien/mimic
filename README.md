@@ -59,10 +59,19 @@ Or, if you've been mimicked a little harder,
 
 ### Installation
 
-Install mimic directly via pip:
-
+Mimic may be installed directly from the GitHub repository via:
 ```
 pip install git+git://github.com/reinderien/mimic.git
+```
+
+When developing mimic, ``pip`` can be used to create a "development" install
+which uses symlink magic to allow changes in files to be reflected without
+re-installing:
+
+```
+git clone git://github.com/reinderien/mimic.git
+cd mimic
+pip install -e .
 ```
 
 ### Solutions
