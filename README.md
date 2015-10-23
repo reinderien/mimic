@@ -63,7 +63,7 @@ that alerts you by highlighting "troll" Unicode characters in red.
 
 People have noticed how terrible this is.
 
-[Reddit](reddit.com/r/programming/3pcs0c)
+[Reddit](https://reddit.com/r/programming/3pcs0c)
 
 [ycombinator](https://news.ycombinator.com/item?id=10437619)
 
