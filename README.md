@@ -54,6 +54,11 @@ Or, if you've been mimicked a little harder,
 <img alt="some worse code"
      src="https://cloud.githubusercontent.com/assets/1236420/10564914/f7963ae4-7591-11e5-9b45-f123e42b22f4.png" />
 
+### Solutions
+
+[vim-troll-stopper](https://github.com/vim-utils/vim-troll-stopper): vim plugin
+that alerts you by highlighting "troll" Unicode characters in red.
+
 ### See also
 
 [Wikipedia: Unicode Equivalence] (https://en.wikipedia.org/wiki/Unicode_equivalence)
