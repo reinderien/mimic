@@ -10,17 +10,17 @@ if version_info >= (3,):
 
 # Surrounding field for printing clarity
 field = u'\u2591'
-# List of all homograph strings
+# List of all homoglyph strings
 all_hgs = []
-# Index dict of all homographs
+# Index dict of all homoglyphs
 hg_index = {}
 
 
-def fill_homographs():
+def fill_homoglyphs():
     """
     Use http://dev.networkerror.org/utf8/?start=0&end=255&cols=10&show_uni_hex=on
     with the stupid table width forced to auto.
-    This dataset is for ASCII characters mapped to UTF-8 homographs (some approximate).
+    This dataset is for ASCII characters mapped to UTF-8 homoglyphs (some approximate).
     Some of the entries are also selected from the results of search(), below.
     """
     all_hgs.extend((
@@ -123,18 +123,18 @@ def fill_homographs():
     hg_index.update({c: hgs for hgs in all_hgs for c in hgs})
 
 
-def homographs_for_char(char):
+def homoglyphs_for_char(char):
     """
     :param char: The char to look up
-    :return: A string of homographs for that char
+    :return: A string of homoglyphs for that char
     """
     return hg_index[char]
 
 
-def has_homographs(char):
+def has_homoglyphs(char):
     """
     :param char: A character to check
-    :return: Whether we have homographs for it
+    :return: Whether we have homoglyphs for it
     """
     return char in hg_index
 
@@ -165,7 +165,7 @@ def read_line():
 
 def listing():
     """
-    Show a list of all known homographs
+    Show a list of all known homoglyphs
     """
     out = get_writer()
     for hgs in all_hgs:
@@ -176,11 +176,11 @@ def listing():
 
 def explain(char):
     """
-    Show an explanation of all known homographs for the given ASCII char
+    Show an explanation of all known homoglyphs for the given ASCII char
     :param char: An ASCII char to explain
     """
-    if not has_homographs(char):
-        print('No homographs.')
+    if not has_homoglyphs(char):
+        print('No homoglyphs.')
         return
 
     try:
@@ -193,7 +193,7 @@ def explain(char):
 
     out.write('Char\tPoint %20s Cat Name\n' % 'Normal')
 
-    for hg in homographs_for_char(char):
+    for hg in homoglyphs_for_char(char):
         norms = ''
         for form in ('NFC', 'NFKC', 'NFD', 'NFKD'):
             h = unicodedata.normalize(form, hg)
@@ -214,7 +214,7 @@ def explain(char):
 
 def search():
     """
-    (Not useful to the user) Troll the unicode DB for normalization matches, which are potentially homographs.
+    (Not useful to the user) Troll the unicode DB for normalization matches, which are potentially homoglyphs.
     """
     try:
         import unicodedata
@@ -231,7 +231,7 @@ def search():
                 continue
             h = unicodedata.normalize(form, u)
             if len(h) == 1 and ord(h) != ord(u) and (
-                        has_homographs(h) or is_ascii(h)):
+                        has_homoglyphs(h) or is_ascii(h)):
                 out.write('%(ascii)c %(form)s->  %(hg)c\tu%(point)04X %(cat)s/%(name)s\n' % {
                     'ascii': h,
                     'form': form,
@@ -245,7 +245,7 @@ def search():
 
 def pipe(hardness, reverse=False):
     """
-    Pipe from input to output, replacing chars with homographs
+    Pipe from input to output, replacing chars with homoglyphs
     End with ctrl+C or EOF
     :param hardness: Percent probability to replace a char
     """
@@ -263,8 +263,8 @@ def pipe(hardness, reverse=False):
         for c in line:
             if reverse:
                 c = hg_index.get(c, c)[0]
-            elif random() < hardness / 100 and has_homographs(c):
-                hms = homographs_for_char(c)
+            elif random() < hardness / 100 and has_homoglyphs(c):
+                hms = homoglyphs_for_char(c)
                 index = randrange(len(hms))
                 c = hms[index]
             out.write(c)
@@ -278,9 +278,9 @@ def parse():
     parser.add_option('-m', '--me-harder', dest='chance', type='float', default=1,
                       help='replacement percent')
     parser.add_option('-e', '--explain', dest='char',
-                      help="show a char's homographs")
+                      help="show a char's homoglyphs")
     parser.add_option('-l', '--list', action='store_true',
-                      help='show all homographs')
+                      help='show all homoglyphs')
     parser.add_option('-r', '--reverse', action='store_true',
                       help='reverse operation, clean a mimicked file')
     return parser.parse_args()
@@ -299,5 +299,5 @@ def main():
         pass
 
 
-fill_homographs()
+fill_homoglyphs()
 
