@@ -17,7 +17,7 @@ It's inspired by this terrible idea floating around:
 <blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">MT: Replace a semicolon (;) with a greek question mark (;) in your friend&#39;s C# code and watch them pull their hair out over the syntax error</p>&mdash; Peter Ritchie (@peterritchie) <a href="https://twitter.com/peterritchie/status/534011965132120064">November 16, 2014</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-There are many more characters in the Unicode character set that look, to some extent or another, like others -  homographs. Mimic substitutes common ASCII characters for obscure homographs.
+There are many more characters in the Unicode character set that look, to some extent or another, like others – homoglyphs. Mimic substitutes common ASCII characters for obscure homoglyphs.
 
 Fun games to play with mimic:
 - Pipe some source code through and see if you can find all of the problems
@@ -27,7 +27,7 @@ Fun games to play with mimic:
 ### Example usage
 
 ```
-./mimic --list           # Show all of the homographs
+./mimic --list           # Show all of the homoglyphs
 ./mimic --explain=o      # What crazy things can we do with this letter?
 ./mimic --me-harder 100  # Type some lines in and mess with every single char
 ./mimic --reverse        # Undo the mayhem. Boooring.
@@ -61,6 +61,19 @@ Install mimic directly via pip:
 ```
 pip install git+git://github.com/reinderien/mimic.git
 ```
+
+### Solutions
+
+[vim-troll-stopper](https://github.com/vim-utils/vim-troll-stopper): vim plugin
+that alerts you by highlighting "troll" Unicode characters in red.
+
+### Discussion
+
+People have noticed how terrible this is.
+
+[Reddit](https://reddit.com/r/programming/3pcs0c)
+
+[ycombinator](https://news.ycombinator.com/item?id=10437619)
 
 ### See also
 
