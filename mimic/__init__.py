@@ -191,7 +191,7 @@ def explain(char):
 
     out = get_writer()
 
-    out.write('Char\tPoint %20s Cat Name\n' % 'Normal')
+    out.write('Char\t%6s %20s Cat Name\n' % ('Point', 'Normal'))
 
     for hg in homoglyphs_for_char(char):
         norms = ''
@@ -202,7 +202,7 @@ def explain(char):
                     norms += ' '
                 norms += form
         out.write(' %(field)c%(hg)c%(field)c\t'
-                  'u%(point)04X %(norms)20s %(cat)3s %(name)s\n' % {
+                  'U+%(point)04X %(norms)20s %(cat)3s %(name)s\n' % {
                       'field': field,
                       'hg': hg,
                       'point': ord(hg),
@@ -232,7 +232,7 @@ def search():
             h = unicodedata.normalize(form, u)
             if len(h) == 1 and ord(h) != ord(u) and (
                         has_homoglyphs(h) or is_ascii(h)):
-                out.write('%(ascii)c %(form)s->  %(hg)c\tu%(point)04X %(cat)s/%(name)s\n' % {
+                out.write('%(ascii)c %(form)s->  %(hg)c\tU+%(point)04X %(cat)s/%(name)s\n' % {
                     'ascii': h,
                     'form': form,
                     'hg': u,
@@ -243,13 +243,12 @@ def search():
                 break
 
 
-def pipe(hardness, reverse=False):
+def pipe(replace):
     """
-    Pipe from input to output, replacing chars with homoglyphs
+    Pipe from input to output
     End with ctrl+C or EOF
-    :param hardness: Percent probability to replace a char
+    :param replace: A function to replace each char
     """
-    from random import random, randrange
 
     out = get_writer()
 
@@ -261,14 +260,44 @@ def pipe(hardness, reverse=False):
         except EOFError:
             return
         for c in line:
-            if reverse:
-                c = hg_index.get(c, c)[0]
-            elif random() < hardness / 100 and has_homoglyphs(c):
-                hms = homoglyphs_for_char(c)
-                index = randrange(len(hms))
-                c = hms[index]
-            out.write(c)
+            out.write(replace(c))
         out.write('\n')
+
+
+def pipe_mimic(hardness):
+    """
+    Pipe from input to output, replacing chars with homoglyphs
+    :param hardness: Percent probability to replace a char
+    """
+    from random import random, randrange
+    
+    def replace(c):
+        if random() > hardness / 100. or not has_homoglyphs(c):
+            return c
+        hms = homoglyphs_for_char(c)
+        index = randrange(len(hms))
+        return hms[index]
+
+    pipe(replace)
+
+
+def replace_reverse(c):
+    """
+    Undo the damage to c
+    """
+    return hg_index.get(c, c)[0]
+
+
+def replace_check(c):
+    """
+    Replace non-ASCII chars with their code point
+    """
+    if ord(c) <= ord('~'):
+        return c
+    return '<%(orig)c:U+%(point)04X>' % {
+        'orig': c,
+        'point': ord(c)
+    }
 
 
 def parse():
@@ -281,6 +310,8 @@ def parse():
                       help="show a char's homoglyphs")
     parser.add_option('-l', '--list', action='store_true',
                       help='show all homoglyphs')
+    parser.add_option('-c', '--check', action='store_true',
+                      help='check input for suspicious chars')
     parser.add_option('-r', '--reverse', action='store_true',
                       help='reverse operation, clean a mimicked file')
     return parser.parse_args()
@@ -293,8 +324,12 @@ def main():
             listing()
         elif options.char:
             explain(unicode(options.char, 'utf-8'))
+        elif options.check:
+            pipe(replace_check)
+        elif options.reverse:
+            pipe(replace_reverse)
         else:
-            pipe(options.chance, options.reverse)
+            pipe_mimic(options.chance)
     except KeyboardInterrupt:
         pass
 
