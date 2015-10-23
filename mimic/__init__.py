@@ -1,6 +1,4 @@
-#!/usr/bin/env python
 # coding=utf-8
-
 
 from sys import version_info
 
@@ -303,5 +301,3 @@ def main():
 
 fill_homographs()
 
-if __name__ == '__main__':
-    main()
