@@ -23,49 +23,6 @@ Fun games to play with mimic:
 - Pipe some source code through and see if you can find all of the problems
 - Pipe someone else's source code through without telling them
 - Be fired, and then killed
- 
-
-### Installation
-
-Mimic may be installed directly from the GitHub repository via:
-```
-pip install git+git://github.com/reinderien/mimic.git
-```
-
-When developing mimic, ``pip`` can be used to create a "development" install
-which uses symlink magic to allow changes in files to be reflected without
-re-installing:
-
-```
-git clone git://github.com/reinderien/mimic.git
-cd mimic
-pip install -e .
-```
-
-### Example usage
-
-These examples assume that mimic has been installed as per the instructions
-below. Before installation, invoke via `python -m mimic`.
-
-```
-mimic --list           # Show all of the homoglyphs
-mimic --explain=o      # What crazy things can we do with this letter?
-mimic --me-harder 100  # Type some lines in and mess with every single char
-mimic --reverse        # Undo the mayhem. Boooring.
-cat somefile | mimic   # Pipe some source through at 1%
-
-# Turn up the knob and save the results
-cat somefile | mimic --me-harder 25 > mimicked
-
-# Find out exactly where we broke the source
-cat mimicked | mimic --check | less
-
-# Now we know the source is broken, so fix it
-cat mimicked | mimic --reverse > fixedfile
-
-# This should output nothing (i.e. the files are the same)
-diff fixedfile somefile
-```
 
 ### Results
 
@@ -80,12 +37,6 @@ Or, if you've been mimicked a little harder,
 <img alt="some worse code"
      src="https://cloud.githubusercontent.com/assets/1236420/10564914/f7963ae4-7591-11e5-9b45-f123e42b22f4.png" />
 
-### Solutions
-
-*  [vim-troll-stopper](https://github.com/vim-utils/vim-troll-stopper): vim plugin
-that alerts you by highlighting "troll" Unicode characters in red.
-*  [emacs-unicode-troll-stopper](https://github.com/camsaul/emacs-unicode-troll-stopper) Emacs port of `vim-troll-stopper`.
-
 ### Discussion
 
 People have noticed how terrible this is.
@@ -94,10 +45,6 @@ People have noticed how terrible this is.
 
 [ycombinator](https://news.ycombinator.com/item?id=10437619)
 
-### See also
+### Further Reading
 
-[Wikipedia: Unicode Equivalence] (https://en.wikipedia.org/wiki/Unicode_equivalence)
-
-[Wikipedia: IDN homograph attack](https://en.wikipedia.org/wiki/IDN_homograph_attack)
-
-[Online homoglyph generator](http://www.irongeek.com/homoglyph-attack-generator.php)
+[mimic wiki](https://github.com/reinderien/mimic/wiki)
