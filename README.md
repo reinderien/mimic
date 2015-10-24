@@ -24,24 +24,28 @@ Fun games to play with mimic:
 - Pipe someone else's source code through without telling them
 - Be fired, and then killed
  
+
 ### Installation
 
-Install from a local directory if you've cloned:
-
-```
-pip install -e .
-```
-
-Install straight from the repo:
-
+Mimic may be installed directly from the GitHub repository via:
 ```
 pip install git+git://github.com/reinderien/mimic.git
 ```
 
+When developing mimic, ``pip`` can be used to create a "development" install
+which uses symlink magic to allow changes in files to be reflected without
+re-installing:
+
+```
+git clone git://github.com/reinderien/mimic.git
+cd mimic
+pip install -e .
+```
 
 ### Example usage
 
-Before installation, invoke via `python -m mimic`. After, simply use `mimic`.
+These examples assume that mimic has been installed as per the instructions
+below. Before installation, invoke via `python -m mimic`.
 
 ```
 mimic --list           # Show all of the homoglyphs
