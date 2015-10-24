@@ -77,8 +77,9 @@ Or, if you've been mimicked a little harder,
 
 ### Solutions
 
-[vim-troll-stopper](https://github.com/vim-utils/vim-troll-stopper): vim plugin
+*  [vim-troll-stopper](https://github.com/vim-utils/vim-troll-stopper): vim plugin
 that alerts you by highlighting "troll" Unicode characters in red.
+*  [emacs-unicode-troll-stopper](https://github.com/camsaul/emacs-unicode-troll-stopper) Emacs port of `vim-troll-stopper`.
 
 ### Discussion
 
