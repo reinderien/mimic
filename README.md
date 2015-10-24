@@ -57,8 +57,13 @@ cat somefile | mimic   # Pipe some source through at 1%
 # Turn up the knob and save the results
 cat somefile | mimic --me-harder 25 > mimicked
 
-# Or, if your code acts strange, but you have seen this prank before:
+# Find out exactly where we broke the source
+cat mimicked | mimic --check | less
+
+# Now we know the source is broken, so fix it
 cat mimicked | mimic --reverse > fixedfile
+
+# This should output nothing (i.e. the files are the same)
 diff fixedfile somefile
 ```
 
