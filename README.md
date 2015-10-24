@@ -45,6 +45,8 @@ People have noticed how terrible this is.
 
 [ycombinator](https://news.ycombinator.com/item?id=10437619)
 
+[BoingBoing](http://boingboing.net/2015/10/23/evil-script-replaces-punctuati.html)
+
 ### Further Reading
 
 [mimic wiki](https://github.com/reinderien/mimic/wiki)
