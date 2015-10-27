@@ -1,2 +1,4 @@
-FROM python:2-onbuild
-ENTRYPOINT [ "python", "/usr/src/app/mimic" ]
+FROM python:2
+COPY . /usr/src/mimic
+RUN pip install /usr/src/mimic
+ENTRYPOINT [ "mimic" ]
