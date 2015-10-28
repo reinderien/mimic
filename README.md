@@ -49,6 +49,8 @@ People have noticed how terrible this is.
 
 [BoingBoing](http://boingboing.net/2015/10/23/evil-script-replaces-punctuati.html)
 
+[The Register](http://www.theregister.co.uk/2015/10/25/ruin_your_codevelopers_life_with_mimic_the_unicode_substitution_tool/)
+
 ### Further Reading
 
 [mimic wiki](https://github.com/reinderien/mimic/wiki)
