@@ -52,7 +52,8 @@ def fill_homoglyphs():
         ('*', u'\uFF0A\u22C6\uFE61', u''),
         ('+', u'\uFF0B\u16ED\uFE62', u'\u207A\u208A'),
         (',', u'\uFF0C\u02CF\u16E7\u201A', u'\uFE10\uFE50\u0317\u0326'),
-        ('-', u'\uFF0D\u02D7\u2212\u23BC\u2574\uFE63', u'\u207B\u208B\u0335\u1680\u174D\u1806\u1C7C\u23AF\u2CBB\u30FC\u3127'),
+        ('-', u'\uFF0D\u02D7\u2212\u23BC\u2574\uFE63',
+         u'\u207B\u208B\u0335\u1680\u174D\u1806\u1C7C\u23AF\u2CBB\u30FC\u3127'),
         ('.', u'\uFF0E\u2024', u'\uFE52\u0323'),
         ('/', u'\uFF0F\u1735\u2044\u2215\u29F8', u'\u0338\u2CC6\u3033'),
         ('0', u'', u'\u2070\u2080\u24EA\uFF10\u1C50'),
@@ -65,7 +66,8 @@ def fill_homoglyphs():
         ('7', u'', u'\u2077\u2087\u2466\uFF17'),
         ('8', u'', u'\u2078\u2088\u2467\uFF18'),
         ('9', u'\u13ED', u'\u2079\u2089\u2468\uFF19'),
-        (':', u'\uFF1A\u02D0\u02F8\u0589\u1361\u16EC\u205A\u2236\u2806\uFE13\uFE55', u'\u05C3\u17C7\u17C8\u1804\u1C7A\uFE30'),
+        (':', u'\uFF1A\u02D0\u02F8\u0589\u1361\u16EC\u205A\u2236\u2806\uFE13\uFE55',
+         u'\u05C3\u17C7\u17C8\u1804\u1C7A\uFE30'),
         (';', u'\uFF1B\u037E\uFE14\uFE54', u''),
         ('<', u'\uFF1C\u02C2\u2039\u227A\u276E\u2D66\uFE64', u'\u3031\u3111'),
         ('=', u'\uFF1D\u2550\u268C\uFE66', u'\u207C\u208C\u30A0'),
@@ -131,7 +133,8 @@ def fill_homoglyphs():
         ('y', u'\u0443\u1EFF', u'\u02B8\u24E8\uFF59'),
         ('z', u'\u1D22', u'\u1DBB\u24E9\uFF5A\u1901'),
         ('{', u'\uFF5B\uFE5B', u''),
-        ('|', u'\uFF5C\u01C0\u16C1\u239C\u239F\u23A2\u23A5\u23AA\u23AE\uFFE8', u'\uFE33\u0846\u1175\u20D2\u2F01\u3021\u4E28\uFE31'),
+        ('|', u'\uFF5C\u01C0\u16C1\u239C\u239F\u23A2\u23A5\u23AA\u23AE\uFFE8',
+         u'\uFE33\u0846\u1175\u20D2\u2F01\u3021\u4E28\uFE31'),
         ('}', u'\uFF5D\uFE5C', u''),
         ('~', u'\uFF5E\u02DC\u2053\u223C', u'\u301C')
     ))
@@ -290,7 +293,7 @@ def pipe_mimic(hardness):
     """
     from itertools import chain
     from random import random, randrange
-    
+
     def replace(c):
         if random() > hardness / 100. or c not in hg_index:
             return c
@@ -333,33 +336,79 @@ def replace_check(c):
 def parse():
     from optparse import OptionParser
 
-    parser = OptionParser()
-    parser.add_option('-m', '--me-harder', dest='chance', type='float', default=1,
-                      help='replacement percent')
-    parser.add_option('-e', '--explain', dest='char',
+    parser = OptionParser(usage='%prog [-h | -f [-m] [-e] | -r [-d] | -c [-d] | -x | -l]')
+    parser.add_option('-f', '--forward', action='store_true',
+                      help='mimic input to output (default)')
+    parser.add_option('-r', '--reverse', action='store_true',
+                      help='de-mimic input to output')
+    parser.add_option('-c', '--check', action='store_true',
+                      help='check input for suspicious chars, flag in output')
+    parser.add_option('-e', '--encode', dest='source_steg_file',
+                      help='encode this file as a hidden co-stream in output')
+    parser.add_option('-d', '--decode', dest='dest_steg_file',
+                      help='decode a hidden co-stream from input to this file')
+    parser.add_option('-m', '--me-harder', dest='chance', type='float',
+                      help='forward replacement percent, default 1')
+    parser.add_option('-x', '--explain', dest='explain_char',
                       help="show a char's homoglyphs")
     parser.add_option('-l', '--list', action='store_true',
                       help='show all homoglyphs')
-    parser.add_option('-c', '--check', action='store_true',
-                      help='check input for suspicious chars')
-    parser.add_option('-r', '--reverse', action='store_true',
-                      help='reverse operation, clean a mimicked file')
-    return parser.parse_args()
+
+    (options, args) = parser.parse_args()
+
+    if not (options.forward or options.reverse or options.check or options.explain_char or options.list):
+        options.forward = True
+
+    present = set(o for o, v in vars(options).items() if v)
+
+    def check_opts(opt, compat=None, req=None):
+        req = req or set()
+        compat = compat or req
+        if opt in present:
+            conflict = present - compat - {opt}
+            if conflict:
+                parser.error('%(opt)s given with incompatible options %(conflict)s' % {
+                    'opt': opt,
+                    'conflict': tuple(conflict)
+                })
+            if req and not present & req:
+                parser.error('%(opt)s missing one of options %(req)s' % {
+                    'opt': opt,
+                    'req': tuple(req)
+                })
+
+    check_opts('forward', {'chance', 'source_steg_file'})
+    check_opts('reverse', {'dest_steg_file'})
+    check_opts('check', {'dest_steg_file'})
+    check_opts('source_steg_file', {'forward', 'chance'}, {'forward'})
+    check_opts('dest_steg_file', req={'reverse', 'check'})
+    check_opts('chance', {'forward', 'source_steg_file'}, {'forward'})
+    check_opts('explain_char')
+    check_opts('list')
+
+    if options.chance is None:
+        options.chance = 1
+    elif not 0 < options.chance <= 100:
+        parser.error('bad percent value for -m')
+
+    return options, args
 
 
 def main():
     try:
         (options, args) = parse()
-        if options.list:
-            listing()
-        elif options.char:
-            explain(unicode(options.char, 'utf-8'))
-        elif options.check:
-            pipe(replace_check)
+        if options.forward:
+            pipe_mimic(options.chance)
         elif options.reverse:
             pipe(replace_reverse)
+        elif options.check:
+            pipe(replace_check)
+        elif options.explain_char:
+            explain(unicode(options.explain_char, 'utf-8'))
+        elif options.list:
+            listing()
         else:
-            pipe_mimic(options.chance)
+            raise Exception('No options parsed')
     except KeyboardInterrupt:
         pass
 
