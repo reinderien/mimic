@@ -269,14 +269,21 @@ def pipe_mimic(hardness):
     Pipe from input to output, replacing chars with homoglyphs
     :param hardness: Percent probability to replace a char
     """
+    from itertools import chain
     from random import random, randrange
     
     def replace(c):
         if random() > hardness / 100. or not has_homoglyphs(c):
             return c
         hms = homoglyphs_for_char(c)
-        index = randrange(len(hms))
-        return hms[index]
+
+        # hms contains the current character. We've already decided, above, that this character should be replaced, so
+        # we need to try and avoid that. Loop through starting at a random index.
+        start = randrange(len(hms))
+        for index in chain(xrange(start, len(hms)), xrange(0, start)):
+            if hms[index] != c:
+                return hms[index]
+        return c
 
     pipe(replace)
 
@@ -335,4 +342,3 @@ def main():
 
 
 fill_homoglyphs()
-
