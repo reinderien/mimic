@@ -10,9 +10,12 @@ if version_info >= (3,):
 
 # Surrounding field for printing clarity
 field = u'\u2591'
-# List of all homoglyph strings
+
+# List of all homoglyphs - named tuples with 'ascii' char, 'fwd' alternatives string for forward mimic mode, and 'rev'
+# string of potentially non-universally-printable chars that should still be able to check or reverse back to ASCII
 all_hgs = []
-# Index dict of all homoglyphs
+
+# Index dict of all homoglyphs for mimicking - key is any char, value is the named tuple described above
 hg_index = {}
 
 
@@ -22,121 +25,118 @@ def fill_homoglyphs():
     with the stupid table width forced to auto.
     This dataset is for ASCII characters mapped to UTF-8 homoglyphs (some approximate).
     Some of the entries are also selected from the results of search(), below.
+
+    Forward entries should stand a reasonable chance of rendering to look like their ASCII equivalent on most common
+    fonts and systems.
+
+    Reverse entries should exist for anything that could possibly be confused with an ASCII char, even if it doesn't
+    render on some fonts and systems.
+
+    If a character is deemed unprintable on some systems, don't delete it - move it from the fwd string to rev.
     """
-    all_hgs.extend((
-        u' \u00A0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F',
-        u'!\uFF01\u01C3\u2D51\uFE15\uFE57',
-        u'"\uFF02',
-        u'#\uFF03\uFE5F',
-        u'$\uFF04\uFE69',
-        u'%\uFF05\u066A\u2052\uFE6A',
-        u'&\uFF06\uFE60',
-        u"'\uFF07\u02B9\u0374",
-        u'(\uFF08\uFE59',
-        u')\uFF09\uFE5A',
-        u'*\uFF0A\u22C6\uFE61',
-        u'+\uFF0B\u16ED\uFE62',
-        u',\uFF0C\u02CF\u16E7\u201A',
-        u'-\uFF0D\u02D7\u2212\u23BC\u2574\uFE63',
-        u'.\uFF0E\u2024',
-        u'/\uFF0F\u1735\u2044\u2215\u29F8',
-        # u'0',
-        # u'1',
-        u'2\u14BF',
-        u'3\u01B7\u2128',
-        u'4\u13CE',
-        # u'5',
-        u'6\u13EE',
-        # u'7',
-        # u'8',
-        u'9\u13ED',
-        u':\uFF1A\u02D0\u02F8\u0589\u1361\u16EC\u205A\u2236\u2806\uFE13\uFE55',
-        u';\uFF1B\u037E\uFE14\uFE54',
-        u'<\uFF1C\u02C2\u2039\u227A\u276E\u2D66\uFE64',
-        u'=\uFF1D\u2550\u268C\uFE66',
-        u'>\uFF1E\u02C3\u203A\u227B\u276F\uFE65',
-        u'?\uFF1F\uFE16\uFE56',
-        u'@\uFF20\uFE6B',
-        u'A\u0391\u0410\u13AA',
-        u'B\u0392\u0412\u13F4\u15F7\u2C82',
-        u'C\u03F9\u0421\u13DF\u216D\u2CA4',
-        u'D\u13A0\u15EA\u216E',
-        u'E\u0395\u0415\u13AC',
-        u'F\u15B4',
-        u'G\u050C\u13C0',
-        u'H\u0397\u041D\u12D8\u13BB\u157C\u2C8E',
-        u'I\u0399\u0406\u2160',
-        u'J\u0408\u13AB\u148D',
-        u'K\u039A\u13E6\u16D5\u212A\u2C94',
-        u'L\u13DE\u14AA\u216C',
-        u'M\u039C\u03FA\u041C\u13B7\u216F',
-        u'N\u039D\u2C9A',
-        u'O\u039F\u041E\u2C9E',
-        u'P\u03A1\u0420\u13E2\u2CA2',
-        u'Q\u051A\u2D55',
-        u'R\u13A1\u13D2\u1587',
-        u'S\u0405\u13DA',
-        u'T\u03A4\u0422\u13A2',
-        # u'U',
-        u'V\u13D9\u2164',
-        u'W\u13B3\u13D4',
-        u'X\u03A7\u0425\u2169\u2CAC',
-        u'Y\u03A5\u2CA8',
-        u'Z\u0396\u13C3',
-        u'[\uFF3B',
-        u'\\\uFF3C\u2216\u29F5\u29F9\uFE68',
-        u']\uFF3D',
-        u'^\uFF3E\u02C4\u02C6\u1DBA\u2303',
-        u'_\uFF3F\u02CD\u268A',
-        u'`\uFF40\u02CB\u1FEF\u2035',
-        u'a\u0251\u0430',
-        # u'b',
-        u'c\u03F2\u0441\u217D',
-        u'd\u0501\u217E',
-        u'e\u0435\u1971',
-        # u'f',
-        u'g\u0261',
-        u'h\u04BB',
-        u'i\u0456\u2170',
-        u'j\u03F3\u0458',
-        # u'k',
-        u'l\u217C',
-        u'm\u217F',
-        u'n\u1952',
-        u'o\u03BF\u043E\u0D20\u2C9F',
-        u'p\u0440\u2CA3',
-        # u'q',
-        # u'r',
-        u's\u0455',
-        # u't',
-        u'u\u1959\u222A',
-        u'v\u1D20\u2174\u2228\u22C1',
-        u'w\u1D21',
-        u'x\u0445\u2179\u2CAD',
-        u'y\u0443\u1EFF',
-        u'z\u1D22',
-        u'{\uFF5B\uFE5B',
-        u'|\uFF5C\u01C0\u16C1\u239C\u239F\u23A2\u23A5\u23AA\u23AE\uFFE8',
-        u'}\uFF5D\uFE5C',
-        u'~\uFF5E\u02DC\u2053\u223C'
+
+    from collections import namedtuple
+    Hgs = namedtuple('Hgs', ('ascii', 'fwd', 'rev'))
+
+    all_hgs.extend(Hgs(*t) for t in (
+        (' ', u'\u00A0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F', u'\u3000'),
+        ('!', u'\uFF01\u01C3\u2D51\uFE15\uFE57', u''),
+        ('"', u'\uFF02', u''),
+        ('#', u'\uFF03\uFE5F', u''),
+        ('$', u'\uFF04\uFE69', u''),
+        ('%', u'\uFF05\u066A\u2052\uFE6A', u''),
+        ('&', u'\uFF06\uFE60', u''),
+        ("'", u'\uFF07\u02B9\u0374', u''),
+        ('(', u'\uFF08\uFE59', u'\u207D\u208D'),
+        (')', u'\uFF09\uFE5A', u'\u207E\u208E'),
+        ('*', u'\uFF0A\u22C6\uFE61', u''),
+        ('+', u'\uFF0B\u16ED\uFE62', u'\u207A\u208A'),
+        (',', u'\uFF0C\u02CF\u16E7\u201A', u'\uFE10\uFE50'),
+        ('-', u'\uFF0D\u02D7\u2212\u23BC\u2574\uFE63', u'\u207B\u208B'),
+        ('.', u'\uFF0E\u2024', u'\uFE52'),
+        ('/', u'\uFF0F\u1735\u2044\u2215\u29F8', u''),
+        ('0', u'', u'\u2070\u2080\u24EA\uFF10'),
+        ('1', u'', u'\u00B9\u2081\u2460\uFF11'),
+        ('2', u'\u14BF', u'\u00B2\u2082\u2461\uFF12'),
+        ('3', u'\u01B7\u2128', u'\u00B3\u2083\u2462\uFF13'),
+        ('4', u'\u13CE', u'\u2074\u2084\u2463\uFF14'),
+        ('5', u'', u'\u2075\u2085\u2464\uFF15'),
+        ('6', u'\u13EE', u'\u2076\u2086\u2465\uFF16'),
+        ('7', u'', u'\u2077\u2087\u2466\uFF17'),
+        ('8', u'', u'\u2078\u2088\u2467\uFF18'),
+        ('9', u'\u13ED', u'\u2079\u2089\u2468\uFF19'),
+        (':', u'\uFF1A\u02D0\u02F8\u0589\u1361\u16EC\u205A\u2236\u2806\uFE13\uFE55', u''),
+        (';', u'\uFF1B\u037E\uFE14\uFE54', u''),
+        ('<', u'\uFF1C\u02C2\u2039\u227A\u276E\u2D66\uFE64', u''),
+        ('=', u'\uFF1D\u2550\u268C\uFE66', u'\u207C\u208C'),
+        ('>', u'\uFF1E\u02C3\u203A\u227B\u276F\uFE65', u''),
+        ('?', u'\uFF1F\uFE16\uFE56', u''),
+        ('@', u'\uFF20\uFE6B', u''),
+        ('A', u'\u0391\u0410\u13AA', u'\u1D2C\u24B6\uFF21'),
+        ('B', u'\u0392\u0412\u13F4\u15F7\u2C82', u'\u1D2E\u212C\u24B7\uFF22'),
+        ('C', u'\u03F9\u0421\u13DF\u216D\u2CA4', u'\u2102\u212D\u24B8\uFF23'),
+        ('D', u'\u13A0\u15EA\u216E', u'\u1D30\u2145\u24B9\uFF24'),
+        ('E', u'\u0395\u0415\u13AC', u'\u1D31\u2130\u24BA\uFF25'),
+        ('F', u'\u15B4', u'\u2131\u24BB\uFF26'),
+        ('G', u'\u050C\u13C0', u'\u1D33\u24BC\uFF27'),
+        ('H', u'\u0397\u041D\u12D8\u13BB\u157C\u2C8E', u'\u1D34\u210B\u210C\u210D\u24BD\uFF28'),
+        ('I', u'\u0399\u0406\u2160', u'\u1D35\u2110\u2111\u24BE\uFF29'),
+        ('J', u'\u0408\u13AB\u148D', u'\u1D36\u24BF\uFF2A'),
+        ('K', u'\u039A\u13E6\u16D5\u212A\u2C94', u'\u1D37\u24C0\uFF2B'),
+        ('L', u'\u13DE\u14AA\u216C', u'\u1D38\u2112\u24C1\uFF2C'),
+        ('M', u'\u039C\u03FA\u041C\u13B7\u216F', u'\u1D39\u2133\u24C2\uFF2D'),
+        ('N', u'\u039D\u2C9A', u'\u1D3A\u2115\u24C3\uFF2E'),
+        ('O', u'\u039F\u041E\u2C9E', u'\u1D3C\u24C4\uFF2F'),
+        ('P', u'\u03A1\u0420\u13E2\u2CA2', u'\u1D3E\u2119\u24C5\uFF30'),
+        ('Q', u'\u051A\u2D55', u'\u211A\u24C6\uFF31'),
+        ('R', u'\u13A1\u13D2\u1587', u'\u1D3F\u211B\u211C\u211D\u24C7\uFF32'),
+        ('S', u'\u0405\u13DA', u'\u24C8\uFF33'),
+        ('T', u'\u03A4\u0422\u13A2', u'\u1D40\u24C9\uFF34'),
+        ('U', u'', u'\u1D41\u24CA\uFF35'),
+        ('V', u'\u13D9\u2164', u'\u24CB\uFF36'),
+        ('W', u'\u13B3\u13D4', u'\u1D42\u24CC\uFF37'),
+        ('X', u'\u03A7\u0425\u2169\u2CAC', u'\u24CD\uFF38'),
+        ('Y', u'\u03A5\u2CA8', u'\u03D2\u24CE\uFF39'),
+        ('Z', u'\u0396\u13C3', u'\u2124\u24CF\uFF3A'),
+        ('[', u'\uFF3B', u''),
+        ('\\', u'\uFF3C\u2216\u29F5\u29F9\uFE68', u''),
+        (']', u'\uFF3D', u''),
+        ('^', u'\uFF3E\u02C4\u02C6\u1DBA\u2303', u''),
+        ('_', u'\uFF3F\u02CD\u268A', u''),
+        ('`', u'\uFF40\u02CB\u1FEF\u2035', u''),
+        ('a', u'\u0251\u0430', u'\u00AA\u1D43\u1D45\u2090\u24D0\uFF41'),
+        ('b', u'', u'\u1D47\u24D1\uFF42'),
+        ('c', u'\u03F2\u0441\u217D', u'\u1D9C\u24D2\uFF43'),
+        ('d', u'\u0501\u217E', u'\u1D48\u2146\u24D3\uFF44'),
+        ('e', u'\u0435\u1971', u'\u1D49\u2091\u212F\u2147\u24D4\uFF45'),
+        ('f', u'', u'\u1DA0\u24D5\uFF46'),
+        ('g', u'\u0261', u'\u1D4D\u1DA2\u210A\u24D6\uFF47'),
+        ('h', u'\u04BB', u'\u02B0\u210E\u24D7\uFF48'),
+        ('i', u'\u0456\u2170', u'\u1D62\u2071\u2139\u2148\u24D8\uFF49'),
+        ('j', u'\u03F3\u0458', u'\u02B2\u2149\u24D9\u2C7C\uFF4A'),
+        ('k', u'', u'\u1D4F\u24DA\uFF4B'),
+        ('l', u'\u217C', u'\u02E1\u2113\u24DB\uFF4C'),
+        ('m', u'\u217F', u'\u1D50\u24DC\uFF4D'),
+        ('n', u'\u1952', u'\u207F\u24DD\uFF4E'),
+        ('o', u'\u03BF\u043E\u0D20\u2C9F', u'\u00BA\u1D52\u2092\u2134\u24DE\uFF4F'),
+        ('p', u'\u0440\u2CA3', u'\u1D56\u24DF\uFF50'),
+        ('q', u'', u'\u24E0\uFF51'),
+        ('r', u'', u'\u02B3\u1D63\u24E1\uFF52'),
+        ('s', u'\u0455', u'\u02E2\u24E2\uFF53'),
+        ('t', u'', u'\u1D57\u24E3\uFF54'),
+        ('u', u'\u1959\u222A', u'\u1D58\u1D64\u24E4\uFF55'),
+        ('v', u'\u1D20\u2174\u2228\u22C1', u'\u1D5B\u1D65\u24E5\u2C7D\uFF56'),
+        ('w', u'\u1D21', u'\u02B7\u24E6\uFF57'),
+        ('x', u'\u0445\u2179\u2CAD', u'\u02E3\u2093\u24E7\uFF58'),
+        ('y', u'\u0443\u1EFF', u'\u02B8\u24E8\uFF59'),
+        ('z', u'\u1D22', u'\u1DBB\u24E9\uFF5A'),
+        ('{', u'\uFF5B\uFE5B', u''),
+        ('|', u'\uFF5C\u01C0\u16C1\u239C\u239F\u23A2\u23A5\u23AA\u23AE\uFFE8', u'\uFE33'),
+        ('}', u'\uFF5D\uFE5C', u''),
+        ('~', u'\uFF5E\u02DC\u2053\u223C', u'')
     ))
-    hg_index.update({c: hgs for hgs in all_hgs for c in hgs})
 
-
-def homoglyphs_for_char(char):
-    """
-    :param char: The char to look up
-    :return: A string of homoglyphs for that char
-    """
-    return hg_index[char]
-
-
-def has_homoglyphs(char):
-    """
-    :param char: A character to check
-    :return: Whether we have homoglyphs for it
-    """
-    return char in hg_index
+    hg_index.update({c: hgs for hgs in all_hgs for c in hgs.ascii + hgs.fwd + hgs.rev})
 
 
 def is_ascii(char):
@@ -169,9 +169,18 @@ def listing():
     """
     out = get_writer()
     for hgs in all_hgs:
-        for c in hgs:
-            out.write(field + c)
-        out.write(field + '\n')
+        out.write(hgs.ascii + ':')
+        if hgs.fwd:
+            out.write(' fwd ')
+            for c in hgs.fwd:
+                out.write(field + c)
+            out.write(field)
+        if hgs.rev:
+            out.write(' rev ')
+            for c in hgs.rev:
+                out.write(field + c)
+            out.write(field)
+        out.write('\n')
 
 
 def explain(char):
@@ -179,7 +188,7 @@ def explain(char):
     Show an explanation of all known homoglyphs for the given ASCII char
     :param char: An ASCII char to explain
     """
-    if not has_homoglyphs(char):
+    if char not in hg_index:
         print('No homoglyphs.')
         return
 
@@ -191,22 +200,33 @@ def explain(char):
 
     out = get_writer()
 
-    out.write('Char\t%6s %20s Cat Name\n' % ('Point', 'Normal'))
+    out.write('Char\t%6s %20s %11s Cat Name\n' % ('Point', 'Normal', 'Rev/fwd/asc'))
 
-    for hg in homoglyphs_for_char(char):
+    hgs = hg_index[char]
+    for hg in hgs.ascii + hgs.fwd + hgs.rev:
         norms = ''
         for form in ('NFC', 'NFKC', 'NFD', 'NFKD'):
             h = unicodedata.normalize(form, hg)
-            if h == hg[0]:
+            if h == hgs.ascii:
                 if norms:
                     norms += ' '
                 norms += form
+
+        fwd_rev = ''
+        if hg not in hgs.rev:
+            fwd_rev += 'F'
+        if hg in hgs.ascii:
+            fwd_rev += 'A'
+        else:
+            fwd_rev += 'R'
+
         out.write(' %(field)c%(hg)c%(field)c\t'
-                  'U+%(point)04X %(norms)20s %(cat)3s %(name)s\n' % {
+                  'U+%(point)04X %(norms)20s %(fwdrev)11s %(cat)3s %(name)s\n' % {
                       'field': field,
                       'hg': hg,
                       'point': ord(hg),
                       'norms': norms,
+                      'fwdrev': fwd_rev,
                       'cat': unicodedata.category(hg),
                       'name': unicodedata.name(hg, '<unnamed>')
                   })
@@ -230,8 +250,7 @@ def search():
             if u in hg_index:
                 continue
             h = unicodedata.normalize(form, u)
-            if len(h) == 1 and ord(h) != ord(u) and (
-                        has_homoglyphs(h) or is_ascii(h)):
+            if len(h) == 1 and ord(h) != ord(u) and h in hg_index:
                 out.write('%(ascii)c %(form)s->  %(hg)c\tU+%(point)04X %(cat)s/%(name)s\n' % {
                     'ascii': h,
                     'form': form,
@@ -273,16 +292,17 @@ def pipe_mimic(hardness):
     from random import random, randrange
     
     def replace(c):
-        if random() > hardness / 100. or not has_homoglyphs(c):
+        if random() > hardness / 100. or c not in hg_index:
             return c
-        hms = homoglyphs_for_char(c)
+        hms = hg_index[c]
 
         # hms contains the current character. We've already decided, above, that this character should be replaced, so
         # we need to try and avoid that. Loop through starting at a random index.
-        start = randrange(len(hms))
-        for index in chain(xrange(start, len(hms)), xrange(0, start)):
-            if hms[index] != c:
-                return hms[index]
+        fwd = hms.ascii + hms.fwd
+        start = randrange(len(fwd))
+        for index in chain(xrange(start, len(fwd)), xrange(0, start)):
+            if fwd[index] != c:
+                return fwd[index]
         return c
 
     pipe(replace)
@@ -292,7 +312,10 @@ def replace_reverse(c):
     """
     Undo the damage to c
     """
-    return hg_index.get(c, c)[0]
+    hgs = hg_index.get(c)
+    if hgs:
+        return hgs.ascii
+    return c
 
 
 def replace_check(c):
