@@ -2,11 +2,11 @@ from math import log
 from random import choice
 from sys import stderr
 
-# Size of buffers
-BUFFER_SIZE = 512
-
 
 class Steganography:
+    # Size of buffers
+    BUFFER_SIZE = 512
+
     def __init__(self, source_file=None, dest_file=None):
         """
         Class to hold the state of the steganography processing
@@ -26,6 +26,8 @@ class Steganography:
             self.source = open(source_file, 'rb')
         if dest_file:
             self.dest = open(dest_file, 'wb')
+
+        self.enabled = (source_file or dest_file)
 
     def get_bits(self, n):
         """
@@ -51,11 +53,11 @@ class Steganography:
 
         # Periodically write out the data buffer to the file.
         # Only do this when the data lines up with byte boundaries
-        if len(self.data) > BUFFER_SIZE and len(self.data) % 8 == 0:
+        if len(self.data) > Steganography.BUFFER_SIZE and len(self.data) % 8 == 0:
             self.dest.write(from_bits(self.data))
             self.data = []
 
-    def stego_choice(self, homoglyph):
+    def stego_encode(self, homoglyph):
         """
         Choose the next mimic character based on the data to encode
 
@@ -64,7 +66,7 @@ class Steganography:
         """
 
         # Short circuit when there is no more data to encode
-        if self.done_encoding:
+        if not self.enabled or self.done_encoding:
             if homoglyph.fwd:
                 return choice(homoglyph.fwd)
             return homoglyph.ascii
@@ -104,7 +106,7 @@ class Steganography:
             else:
                 return homoglyph.ascii
 
-    def unstego(self, char, homoglyph):
+    def stego_decode(self, char, homoglyph):
         """
         Reverses the steganography encoding of stego_choice
 
@@ -113,14 +115,14 @@ class Steganography:
         :return: None
         """
 
-        if not self.done_encoding:
+        if self.enabled and not self.done_encoding:
             # Not all characters were replaced with homoglyphs
             if char in homoglyph.fwd:
 
                 # Determine if there was a character choice outside the allowed range.
                 # This indicates that there is no more data to recover and the rest of
                 # the substitutions are cosmetic only.
-                bits_available = int(log(len(homoglyph.fwd), 2))
+                bits_available = self.encodable_bits(homoglyph.fwd)
                 index = homoglyph.fwd.index(char)
                 if index >= 2 ** bits_available:
                     self.done_encoding = True
@@ -129,6 +131,19 @@ class Steganography:
                     # Pad the leading zeros to ensure the right bits are recorded.
                     bits = [0] * (bits_available - len(bits_raw)) + [int(d) for d in bits_raw]
                     self.add_bits(bits)
+
+    @staticmethod
+    def encodable_bits(choices):
+        """
+        Calculates the number of bits of data that can be encoded using a given set if choices.
+
+        The number of choices to represent n bits is 2^n.
+        :param choices:  The choices for encoding a bit sequence
+        :return:  The number of bits that can be encoded using these choices
+        """
+        if len(choices) < 2:
+            return 0
+        return int(log(len(choices), 2))
 
     def close(self):
         """

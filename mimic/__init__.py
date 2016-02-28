@@ -1,11 +1,14 @@
 # coding=utf-8
 from __future__ import print_function
 
+from collections import namedtuple
 from itertools import chain
 from random import random, randrange
 from sys import version_info
 
 from mimic.steganography import Steganography
+
+Hgs = namedtuple('Hgs', ('ascii', 'fwd', 'rev'))
 
 if version_info >= (3,):
     unichr = chr
@@ -42,9 +45,6 @@ def fill_homoglyphs():
 
     If a character is deemed unprintable on some systems, don't delete it - move it from the fwd string to rev.
     """
-
-    from collections import namedtuple
-    Hgs = namedtuple('Hgs', ('ascii', 'fwd', 'rev'))
 
     all_hgs.extend(Hgs(*t) for t in (
         (' ', u'\u00A0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F', u'\u3000'),
@@ -310,7 +310,7 @@ def pipe_mimic(read_line, hardness, stego):
 
         # If there is a stego object, use that to choose the next character
         if s:
-            return s.stego_choice(hms)
+            return s.stego_encode(hms)
 
         # hms contains the current character. We've already decided, above, that this character should be replaced, so
         # we need to try and avoid that. Loop through starting at a random index.
@@ -331,7 +331,7 @@ def replace_reverse(c, stego):
     hgs = hg_index.get(c)
     if hgs:
         if stego:
-            stego.unstego(c, hgs)
+            stego.stego_decode(c, hgs)
         return hgs.ascii
     return c
 

@@ -9,4 +9,6 @@ setup(
             'mimic=mimic:main',
         ],
     },
+    test_suite='nose.collector',
+    tests_require=['nose']
 )
