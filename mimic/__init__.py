@@ -290,7 +290,9 @@ def pipe(read_line, replace, stego):
                 c = chr(c)
             replacement = replace(c, stego)
             out.write(replacement)
-        out.write('\n')
+
+        if not line.endswith("\n"):
+            out.write('\n')
 
 
 def pipe_mimic(read_line, hardness, stego):
@@ -419,8 +421,8 @@ def read_line_stdin():
     from sys import stdin
 
     if version_info >= (3,):
-        return input()
-    return raw_input().decode(stdin.encoding or 'utf-8')
+        return input() + "\n"
+    return raw_input().decode(stdin.encoding or 'utf-8') + "\n"
 
 
 def create_read_line_file(file_name):
