@@ -1,6 +1,14 @@
 # coding=utf-8
+from __future__ import print_function
 
+from collections import namedtuple
+from itertools import chain
+from random import random, randrange
 from sys import version_info
+
+from mimic.steganography import Steganography
+
+Hgs = namedtuple('Hgs', ('ascii', 'fwd', 'rev'))
 
 if version_info >= (3,):
     unichr = chr
@@ -10,6 +18,9 @@ if version_info >= (3,):
 
 # Surrounding field for printing clarity
 field = u'\u2591'
+
+# source file
+FILE = None
 
 # List of all homoglyphs - named tuples with 'ascii' char, 'fwd' alternatives string for forward mimic mode, and 'rev'
 # string of potentially non-universally-printable chars that should still be able to check or reverse back to ASCII
@@ -34,9 +45,6 @@ def fill_homoglyphs():
 
     If a character is deemed unprintable on some systems, don't delete it - move it from the fwd string to rev.
     """
-
-    from collections import namedtuple
-    Hgs = namedtuple('Hgs', ('ascii', 'fwd', 'rev'))
 
     all_hgs.extend(Hgs(*t) for t in (
         (' ', u'\u00A0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F', u'\u3000'),
@@ -158,14 +166,6 @@ def get_writer():
     return getwriter(stdout.encoding or 'utf-8')(stdout)
 
 
-def read_line():
-    from sys import stdin
-
-    if version_info >= (3,):
-        return input()
-    return raw_input().decode(stdin.encoding or 'utf-8')
-
-
 def listing():
     """
     Show a list of all known homoglyphs
@@ -265,11 +265,13 @@ def search():
                 break
 
 
-def pipe(replace):
+def pipe(read_line, replace, stego):
     """
     Pipe from input to output
     End with ctrl+C or EOF
+    :param read_line: A function which returns the next line of input
     :param replace: A function to replace each char
+    :param stego: A StegoHelper instance to manage the steganography
     """
 
     out = get_writer()
@@ -281,23 +283,36 @@ def pipe(replace):
             line = read_line()
         except EOFError:
             return
+        if line == '':
+            return
         for c in line:
-            out.write(replace(c))
-        out.write('\n')
+            if isinstance(c, int):
+                c = chr(c)
+            replacement = replace(c, stego)
+            out.write(replacement)
+
+        if not line.endswith("\n"):
+            out.write('\n')
 
 
-def pipe_mimic(hardness):
+def pipe_mimic(read_line, hardness, stego):
     """
     Pipe from input to output, replacing chars with homoglyphs
+    :param read_line: function to procide the next line of text to mimick
     :param hardness: Percent probability to replace a char
+    :param stego: Steganography module to encode data in the mimicking
     """
-    from itertools import chain
-    from random import random, randrange
 
-    def replace(c):
+    def replace(c, s):
+        if isinstance(c, int):
+            c = chr(c)
         if random() > hardness / 100. or c not in hg_index:
             return c
         hms = hg_index[c]
+
+        # If there is a stego object, use that to choose the next character
+        if s:
+            return s.stego_encode(hms)
 
         # hms contains the current character. We've already decided, above, that this character should be replaced, so
         # we need to try and avoid that. Loop through starting at a random index.
@@ -308,20 +323,22 @@ def pipe_mimic(hardness):
                 return fwd[index]
         return c
 
-    pipe(replace)
+    pipe(read_line, replace, stego)
 
 
-def replace_reverse(c):
+def replace_reverse(c, stego):
     """
     Undo the damage to c
     """
     hgs = hg_index.get(c)
     if hgs:
+        if stego:
+            stego.stego_decode(c, hgs)
         return hgs.ascii
     return c
 
 
-def replace_check(c):
+def replace_check(c, stego):
     """
     Replace non-ASCII chars with their code point
     """
@@ -353,6 +370,8 @@ def parse():
                       help="show a char's homoglyphs")
     parser.add_option('-l', '--list', action='store_true',
                       help='show all homoglyphs')
+    parser.add_option('-s', '--source', dest='source_file',
+                      help='mimic or demimic a source file instead of stdin')
 
     (options, args) = parser.parse_args()
 
@@ -377,12 +396,12 @@ def parse():
                     'req': tuple(req)
                 })
 
-    check_opts('forward', {'chance', 'source_steg_file'})
-    check_opts('reverse', {'dest_steg_file'})
-    check_opts('check', {'dest_steg_file'})
-    check_opts('source_steg_file', {'forward', 'chance'}, {'forward'})
-    check_opts('dest_steg_file', req={'reverse', 'check'})
-    check_opts('chance', {'forward', 'source_steg_file'}, {'forward'})
+    check_opts('forward', {'chance', 'source_steg_file', 'source_file'})
+    check_opts('reverse', {'dest_steg_file', 'source_file'})
+    check_opts('check', {'dest_steg_file', 'source_file'})
+    check_opts('source_steg_file', {'forward', 'chance', 'source_file'}, {'forward'})
+    check_opts('dest_steg_file', {'reverse', 'check', 'source_file'}, req={'reverse', 'check'})
+    check_opts('chance', {'forward', 'source_steg_file', 'source_file'}, {'forward'})
     check_opts('explain_char')
     check_opts('list')
 
@@ -394,15 +413,51 @@ def parse():
     return options, args
 
 
+def read_line_stdin():
+    """
+    read_line implementation drawing from stdin (default usage)
+    :return:  Next line of input as a string
+    """
+    from sys import stdin
+
+    if version_info >= (3,):
+        return input() + "\n"
+    return raw_input().decode(stdin.encoding or 'utf-8') + "\n"
+
+
+def create_read_line_file(file_name):
+    """
+    read_line implementation drawing from a file
+
+    :param file_name:  The name of the file to read
+    :return:  The next line of the file
+    """
+    global FILE
+    FILE = open(file_name, "rb")
+    def read_line_file():
+        return FILE.readline().decode("utf-8")
+    return read_line_file
+
+
 def main():
     try:
         (options, args) = parse()
+
+        reader = read_line_stdin
+        if options.source_file:
+            reader = create_read_line_file(options.source_file)
+
         if options.forward:
-            pipe_mimic(options.chance)
+            stego = Steganography(source_file=options.source_steg_file)
+            pipe_mimic(reader, options.chance, stego)
+            stego.close()
         elif options.reverse:
-            pipe(replace_reverse)
+            stego = Steganography(dest_file=options.dest_steg_file)
+            pipe(reader, replace_reverse, stego)
+            stego.close()
         elif options.check:
-            pipe(replace_check)
+            stego = Steganography()
+            pipe(reader, replace_check, stego)
         elif options.explain_char:
             explain(unicode(options.explain_char, 'utf-8'))
         elif options.list:

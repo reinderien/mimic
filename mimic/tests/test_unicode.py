@@ -1,8 +1,15 @@
-from unittest import TestCase
-from . import all_hgs, hg_index
+import unittest
+from sys import version_info
+
+from mimic import all_hgs, hg_index
+
+if version_info >= (3,):
+    unichr = chr
+    unicode = lambda s, e: s
+    xrange = range
 
 
-class TestDataset(TestCase):
+class TestDataset(unittest.TestCase):
 
     def test_ascii_range(self):
         self.assertEqual(len(all_hgs), ord('~') - ord(' ') + 1)
