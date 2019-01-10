@@ -311,6 +311,43 @@ def pipe_mimic(hardness):
     pipe(replace)
 
 
+def pipe_mimic_strings(hardness):
+    """
+    Pipe from input to output, replacing chars in double or single
+    quoted chars/string literals with homoglyphs
+    :param hardness: Percent probability to replace a char
+    """
+    from itertools import chain
+    from random import random, randrange
+    import re
+
+    def replace_string(match_object):
+        replacement = []
+        for c in (match_object[1] or match_object[2]):
+            if random() > hardness / 100. or c not in hg_index:
+                replacement.append(c)
+            hms = hg_index[c]
+
+            # hms contains the current character. We've already decided, above, that this character should be replaced, so
+            # we need to try and avoid that. Loop through starting at a random index.
+            fwd = hms.ascii + hms.fwd
+            start = randrange(len(fwd))
+            for index in chain(xrange(start, len(fwd)), xrange(0, start)):
+                if fwd[index] != c:
+                    replacement.append(fwd[index])
+            replacement.append(c)
+        return ''.join(replacement)
+
+    out = get_writer()
+
+    while True:
+        try:
+            line = read_line()
+        except EOFError:
+            return
+        out.write(re.sub(r"""("([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)')""", replace_string, line) + '\n')
+
+
 def replace_reverse(c):
     """
     Undo the damage to c
@@ -339,6 +376,8 @@ def parse():
     parser = OptionParser(usage='%prog [-h | -f [-m] [-e] | -r [-d] | -c [-d] | -x | -l]')
     parser.add_option('-f', '--forward', action='store_true',
                       help='mimic input to output (default)')
+    parser.add_option('-s', '--strings', action='store_true',
+                      help='mimic double or tripled quoted strings from input to output')
     parser.add_option('-r', '--reverse', action='store_true',
                       help='de-mimic input to output')
     parser.add_option('-c', '--check', action='store_true',
@@ -356,7 +395,7 @@ def parse():
 
     (options, args) = parser.parse_args()
 
-    if not (options.forward or options.reverse or options.check or options.explain_char or options.list):
+    if not (options.forward or options.strings or options.reverse or options.check or options.explain_char or options.list):
         options.forward = True
 
     present = set(o for o, v in vars(options).items() if v)
@@ -378,11 +417,12 @@ def parse():
                 })
 
     check_opts('forward', {'chance', 'source_steg_file'})
+    check_opts('strings', {'chance'})
     check_opts('reverse', {'dest_steg_file'})
     check_opts('check', {'dest_steg_file'})
     check_opts('source_steg_file', {'forward', 'chance'}, {'forward'})
     check_opts('dest_steg_file', req={'reverse', 'check'})
-    check_opts('chance', {'forward', 'source_steg_file'}, {'forward'})
+    check_opts('chance', {'forward', 'strings', 'source_steg_file'})
     check_opts('explain_char')
     check_opts('list')
 
@@ -399,6 +439,8 @@ def main():
         (options, args) = parse()
         if options.forward:
             pipe_mimic(options.chance)
+        if options.strings:
+            pipe_mimic_strings(options.chance)
         elif options.reverse:
             pipe(replace_reverse)
         elif options.check:
