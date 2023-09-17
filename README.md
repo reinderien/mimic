@@ -43,7 +43,7 @@ People have noticed how terrible this is.
 
 [SlashDot](http://developers.slashdot.org/story/15/10/24/1759201/mimic-the-evil-script-that-will-drive-programmers-to-insanity)
 
-[Reddit](https://reddit.com/r/programming/3pcs0c)
+[Reddit](https://www.reddit.com/r/programming/comments/3pcs0c)
 
 [ycombinator](https://news.ycombinator.com/item?id=10437619)
 
